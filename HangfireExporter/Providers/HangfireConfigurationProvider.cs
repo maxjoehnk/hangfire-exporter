@@ -13,32 +13,30 @@ using StackExchange.Redis;
 using System;
 using System.Transactions;
 
-namespace hangfireExporter.Providers
+namespace HangfireExporter.Providers
 {
     public static class HangfireConfigurationProvider
     {
         public static void GetMongoConfiguration(string connectionString, string mongoDatabaseName)
         {
-            GlobalConfiguration.Configuration.UseMongoStorage(connectionString, mongoDatabaseName, new MongoStorageOptions
-            {
-            });
+            GlobalConfiguration.Configuration.UseMongoStorage(connectionString, mongoDatabaseName, new MongoStorageOptions());
         }
 
         public static void GetSqlServerConfiguration(string connectionString)
         {
-            GlobalConfiguration.Configuration.UseSqlServerStorage(@connectionString);
+            GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString);
         }
 
-        public static void GetRedisConfiguration(string redisIP)
+        public static void GetRedisConfiguration(string redisIp)
         {
-            ConnectionMultiplexer Redis = ConnectionMultiplexer.Connect(redisIP);
-            GlobalConfiguration.Configuration.UseRedisStorage(Redis);
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisIp);
+            GlobalConfiguration.Configuration.UseRedisStorage(redis);
         }
 
         public static void GetAzureServiceBusQueueConfiguration(string connectionString)
         {
-            var sqlStorage = new SqlServerStorage(connectionString);
-            var azureConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
+            SqlServerStorage sqlStorage = new SqlServerStorage(connectionString);
+            string azureConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
 
             Action<QueueDescription> configureAction = qd =>
             {
@@ -58,9 +56,9 @@ namespace hangfireExporter.Providers
             GlobalConfiguration.Configuration.UseStorage(sqlStorage);
         }
 
-        public static void GetLiteDBConfiguration(string liteDBPath)
+        public static void GetLiteDbConfiguration(string liteDbPath)
         {
-            GlobalConfiguration.Configuration.UseLiteDbStorage(liteDBPath);
+            GlobalConfiguration.Configuration.UseLiteDbStorage(liteDbPath);
         }
 
         public static void GetMemoryStorageConfiguration()
